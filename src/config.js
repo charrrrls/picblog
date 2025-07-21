@@ -1,14 +1,14 @@
 const config = {
   //网页元数据
   metaData:{
-    title: 'Leleo的个人主页🎉',
-    description: '欢迎来到Leleo的奇妙世界！',
-    keywords: 'Leleo,leleo,个人主页,个人网站',
+    title: 'Charles的个人主页🎉',
+    description: '欢迎来到Charles的奇妙世界！',
+    keywords: 'Charles,charrrrls,个人主页,个人网站,摄影,技术',
     icon: '/favicon.ico'   //网页图标，支持外链
   },
 
-  avatar: "/img/avatar.jpg", // 头像
-  welcometitle: "Hi, I'm Leleo", // 标题
+  avatar: "/img/avatar-new.jpg", // 头像
+  welcometitle: "Hi, I'm Charles", // 标题
 
   // 颜色配置
   color: {
@@ -20,7 +20,7 @@ const config = {
   blur: 5, // 毛玻璃模糊效果
 
   // 我的标签
-  tags : ['乐观开朗','温柔体贴','随和亲切','冷静沉着','才思敏捷','风趣幽默','刚正不阿','善解人意'],
+  tags : ['摄影爱好者','技术探索者','创意设计师','细节控','完美主义者','学习狂热者','开源贡献者','生活记录者'],
 
   // 默认背景壁纸
   background: {
@@ -51,20 +51,20 @@ const config = {
 
   //社交按钮
   socialPlatformIcons: [
-    {icon:"mdi-github",link:"https://www.github.com/leleo886"},
-    {icon:"mdi-email",link:"mailto:leleo886@foxmail.com"},
-    {icon:"mdi-qqchat",link:"https://im.qq.com/"},
-    {icon:"mdi-wechat",link:"https://wx.qq.com/"},
-    {icon:"mdi-youtube",link:"https://www.youtube.com"},
-    {icon:"mdi-facebook",link:"https://www.facebook.com"}
+    {icon:"mdi-github",link:"https://www.github.com/charrrrls"},
+    {icon:"mdi-email",link:"mailto:1220972572@qq.com"},
+    {icon:"mdi-qqchat",link:"tencent://message/?uin=1220972572&Site=&Menu=yes"},
+    {icon:"mdi-wechat",link:"weixin://dl/chat?z18184788631"},
+    {icon:"mdi-camera",link:"#photography"},
+    {icon:"mdi-code-tags",link:"#projects"}
   ],
 
   //打字机
   typeWriterStrings: [
-    "如果你看到了这行字，说明我已经成功吸引到了你的注意力。",
-    "顶峰的少年，给了你所有细节，你却说我不是迪迦，给不了你想要的光。",
-    "心简单，世界就简单，幸福才会生长；心自由，生活就自由，到哪都有快乐。",
-    "生命太短，没有时间留给遗憾，若不是终点，请微笑一直向前。"
+    "用镜头记录生活的美好瞬间，用代码创造数字世界的无限可能。",
+    "每一张照片都是时光的见证，每一行代码都是梦想的延续。",
+    "在像素与代码之间寻找平衡，在创意与技术中探索未来。",
+    "摄影让我看见世界的美，编程让我创造心中的梦。"
   ],
 
   //音乐播放配置，采用MetingJS Api(https://github.com/metowolf/MetingJS)
@@ -148,7 +148,7 @@ const config = {
     {go:"🔍 前往",img:"/img/sunshine.jpg",title:"Project 8",subtitle:"8,000 miles of wonder", text:"If you see this line, I've managed to get your attention.",url:"https://leleo.top",show:false},
   ],
   
-  statement: ["备案号：XXICP备123456789号","Copyright © 2025 Leleo"],
+  statement: ["联系方式：QQ 1220972572 | 微信 z18184788631","Copyright © 2025 Charles | GitHub: charrrrls"],
 }
 
 export default config
