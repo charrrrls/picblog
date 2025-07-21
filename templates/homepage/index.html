@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="app">
+    <!-- Vue应用将在这里挂载 -->
+    <v-app class="vapp-fullscreen-background">
+        <!-- Loading组件 -->
+        <transition name="fade">
+            <div class="loading" v-show="isloading">
+                <div class="loader-container">
+                    <svg class="loader" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283">
+                            <animate attributeName="stroke-dasharray" dur="2s" values="0 283;141.5 141.5;0 283" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-dashoffset" dur="2s" values="0;-141.5;-283" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                </div>
+            </div>
+        </transition>
+
+        <!-- 背景视频 -->
+        <video autoplay loop muted class="video-bg" id="bg-video" ref="VdPlayer">
+            <source :src="videosrc" type="video/mp4">
+        </video>
+
+        <!-- 清屏开关 -->
+        <div class="floating-switch-container">
+            <v-switch
+                v-model="isClearScreen"
+                inset
+                class="floating-switch"
+                @mouseover="expandSwitch"
+                @mouseleave="collapseSwitch"
+            ></v-switch>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <v-container fluid class="fill-height" v-show="!isClearScreen">
+            <v-row align="center" justify="center" class="fill-height">
+                <!-- 左侧内容 -->
+                <v-col cols="12" md="6" class="text-center">
+                    <!-- 欢迎标题 -->
+                    <div class="leleo-left-welcome" style="font-size: 4rem;">
+                        {{ configdata.welcometitle }}
+                    </div>
+                    
+                    <!-- 头像和基本信息 -->
+                    <v-card class="ma-3" hover>
+                        <v-card-text class="text-center">
+                            <v-avatar size="120" class="mb-4">
+                                <v-img :src="configdata.avatar" alt="头像"></v-img>
+                            </v-avatar>
+                            
+                            <!-- 打字机效果 -->
+                            <div id="typewriter" class="typewriter-text mb-4"></div>
+                            
+                            <!-- 个性标签 -->
+                            <div class="mb-4" v-if="personalizedtags">
+                                <v-chip
+                                    v-for="tag in personalizedtags"
+                                    :key="tag"
+                                    class="ma-1"
+                                    color="primary"
+                                    variant="outlined"
+                                >
+                                    {{ tag }}
+                                </v-chip>
+                            </div>
+                            
+                            <!-- 技能图标 -->
+                            <div class="mb-4">
+                                <v-tooltip
+                                    v-for="skill in stackicons"
+                                    :key="skill.tip"
+                                    location="top"
+                                >
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn
+                                            v-bind="props"
+                                            :icon="skill.icon"
+                                            :color="skill.color"
+                                            class="ma-1"
+                                            size="small"
+                                            variant="outlined"
+                                        ></v-btn>
+                                    </template>
+                                    <span>{{ skill.tip }}</span>
+                                </v-tooltip>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                
+                <!-- 右侧内容 -->
+                <v-col cols="12" md="6">
+                    <!-- 时钟卡片 -->
+                    <v-card class="ma-3" hover>
+                        <v-card-title class="leleo-card-title clock-font">
+                            {{ formattedTime }}
+                        </v-card-title>
+                        <v-card-subtitle style="font-weight: bold;">
+                            {{ formattedDate }}
+                        </v-card-subtitle>
+                        
+                        <!-- 转盘组件 -->
+                        <v-card-text class="text-center">
+                            <div class="turntable-container mb-4">
+                                <canvas id="turntable" width="200" height="200"></canvas>
+                            </div>
+                            
+                            <!-- 极坐标技能图表 -->
+                            <div class="polar-chart-container">
+                                <canvas id="polar-chart" width="300" height="200"></canvas>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                    
+                    <!-- 项目展示 -->
+                    <v-card class="ma-3" hover v-if="projectcards && projectcards.length">
+                        <v-card-title>项目展示</v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col
+                                    v-for="project in projectcards"
+                                    :key="project.title"
+                                    cols="12"
+                                    sm="6"
+                                >
+                                    <v-card variant="outlined" hover>
+                                        <v-card-title class="text-subtitle-1">
+                                            {{ project.title }}
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <p class="text-caption">{{ project.description }}</p>
+                                            <div class="mt-2">
+                                                <v-chip
+                                                    v-for="tech in project.technologies"
+                                                    :key="tech"
+                                                    size="x-small"
+                                                    class="ma-1"
+                                                    variant="outlined"
+                                                >
+                                                    {{ tech }}
+                                                </v-chip>
+                                            </div>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-btn
+                                                v-if="project.link"
+                                                :href="project.link"
+                                                target="_blank"
+                                                size="small"
+                                                variant="outlined"
+                                            >
+                                                查看项目
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+
+        <!-- 底部操作按钮 -->
+        <v-fab
+            v-show="!isClearScreen"
+            location="bottom end"
+            size="small"
+            icon="mdi-cog"
+            @click="dialog1 = true"
+        ></v-fab>
+
+        <!-- 配置对话框 -->
+        <v-dialog v-model="dialog1" max-width="800">
+            <v-card>
+                <v-card-title>个性化配置</v-card-title>
+                <v-card-text>
+                    <v-tabs v-model="tab">
+                        <v-tab
+                            v-for="tabItem in tabs"
+                            :key="tabItem.value"
+                            :value="tabItem.value"
+                        >
+                            <v-icon :icon="tabItem.icon" class="me-2"></v-icon>
+                            {{ tabItem.text }}
+                        </v-tab>
+                    </v-tabs>
+                    
+                    <v-tabs-window v-model="tab">
+                        <!-- 样式预览标签页 -->
+                        <v-tabs-window-item value="tab-1">
+                            <div class="pa-4">
+                                <v-text-field
+                                    v-model="color.themecolor"
+                                    label="主题颜色"
+                                    readonly
+                                    variant="outlined"
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="color.welcometitlecolor"
+                                    label="标题颜色"
+                                    readonly
+                                    variant="outlined"
+                                ></v-text-field>
+                                <v-slider
+                                    label="背景亮度"
+                                    :max="100"
+                                    :min="50"
+                                    :step="0.5"
+                                    v-model="brightness"
+                                    thumb-label="always"
+                                ></v-slider>
+                                <v-slider
+                                    label="模糊度"
+                                    :max="20"
+                                    :min="0"
+                                    v-model="blur"
+                                    thumb-label="always"
+                                ></v-slider>
+                            </div>
+                        </v-tabs-window-item>
+                        
+                        <!-- 背景预览标签页 -->
+                        <v-tabs-window-item value="tab-2">
+                            <div class="pa-4">
+                                <p>背景预览功能</p>
+                            </div>
+                        </v-tabs-window-item>
+                        
+                        <!-- 音乐播放标签页 -->
+                        <v-tabs-window-item value="tab-3">
+                            <div class="pa-4">
+                                <p>音乐播放功能</p>
+                            </div>
+                        </v-tabs-window-item>
+                    </v-tabs-window>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="dialog1 = false">关闭</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+    </v-app>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'js/homepage.js' %}"></script>
+{% endblock %}

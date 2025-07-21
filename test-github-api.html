@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .project {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        img {
+            max-width: 200px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub API 测试页面</h1>
+    <div id="app">
+        <div id="loading" class="loading">正在加载GitHub项目数据...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="projects"></div>
+    </div>
+
+    <script type="module">
+        // GitHub API服务测试
+        const GITHUB_API_BASE = 'https://api.github.com';
+        const REPO_OWNER = 'charrrrls';
+        const REPO_NAME = 'mypic';
+
+        async function testGitHubAPI() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const projectsEl = document.getElementById('projects');
+
+            try {
+                console.log('开始测试GitHub API...');
+                
+                // 测试获取仓库根目录内容
+                const url = `${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/`;
+                console.log('请求URL:', url);
+                
+                const response = await fetch(url);
+                console.log('响应状态:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status} - ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('获取到的数据:', data);
+                
+                loadingEl.style.display = 'none';
+                
+                if (data.length === 0) {
+                    projectsEl.innerHTML = '<p>仓库为空或没有找到文件夹</p>';
+                    return;
+                }
+                
+                // 过滤出文件夹
+                const folders = data.filter(item => item.type === 'dir');
+                console.log('找到的文件夹:', folders);
+                
+                if (folders.length === 0) {
+                    projectsEl.innerHTML = '<p>没有找到项目文件夹</p>';
+                    return;
+                }
+                
+                // 显示项目文件夹
+                let html = '<h2>找到的项目文件夹:</h2>';
+                for (const folder of folders) {
+                    html += `
+                        <div class="project">
+                            <h3>${folder.name}</h3>
+                            <p>路径: ${folder.path}</p>
+                            <p>类型: ${folder.type}</p>
+                            <button onclick="loadProjectImages('${folder.path}', '${folder.name}')">加载图片</button>
+                            <div id="images-${folder.name}" style="margin-top: 10px;"></div>
+                        </div>
+                    `;
+                }
+                projectsEl.innerHTML = html;
+                
+            } catch (error) {
+                console.error('GitHub API测试失败:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.textContent = `错误: ${error.message}`;
+            }
+        }
+
+        // 加载项目图片
+        window.loadProjectImages = async function(projectPath, projectName) {
+            const imagesEl = document.getElementById(`images-${projectName}`);
+            imagesEl.innerHTML = '<p>正在加载图片...</p>';
+            
+            try {
+                const url = `${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${projectPath}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`无法加载项目图片: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+                
+                const images = data.filter(item => {
+                    if (item.type !== 'file') return false;
+                    const extension = item.name.toLowerCase().substr(item.name.lastIndexOf('.'));
+                    return imageExtensions.includes(extension);
+                });
+                
+                if (images.length === 0) {
+                    imagesEl.innerHTML = '<p>此项目中没有找到图片文件</p>';
+                    return;
+                }
+                
+                let html = `<p>找到 ${images.length} 张图片:</p><div style="display: flex; flex-wrap: wrap; gap: 10px;">`;
+                images.forEach(image => {
+                    const thumbnailUrl = `https://images.weserv.nl/?url=${encodeURIComponent(image.download_url)}&w=200&h=150&fit=cover&we`;
+                    html += `
+                        <div style="text-align: center;">
+                            <img src="${thumbnailUrl}" alt="${image.name}" title="${image.name}" />
+                            <div style="font-size: 12px; margin-top: 5px;">${image.name}</div>
+                            <div style="font-size: 10px; color: #666;">${(image.size / 1024).toFixed(1)} KB</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                imagesEl.innerHTML = html;
+                
+            } catch (error) {
+                console.error('加载项目图片失败:', error);
+                imagesEl.innerHTML = `<p style="color: red;">加载失败: ${error.message}</p>`;
+            }
+        }
+
+        // 页面加载后开始测试
+        testGitHubAPI();
+    </script>
+</body>
+</html>
