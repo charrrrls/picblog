@@ -7,7 +7,7 @@ const config = {
     icon: '/favicon.ico'   //网页图标，支持外链
   },
 
-  avatar: "/img/avatar-new.jpg", // 头像
+  avatar: "/img/avatar-charles.jpg", // 头像
   welcometitle: "Hi, I'm Charles", // 标题
 
   // 颜色配置
@@ -17,7 +17,7 @@ const config = {
   },
   
   brightness: 85, // 背景亮度 --%
-  blur: 5, // 毛玻璃模糊效果
+  blur: 0, // 毛玻璃模糊效果
 
   // 我的标签
   tags : ['摄影爱好者','技术探索者','创意设计师','细节控','完美主义者','学习狂热者','开源贡献者','生活记录者'],
@@ -29,7 +29,7 @@ const config = {
       "datainfo":{
         "title":"海洋女孩", 
         "preview":"/img/wallpaper/static/海洋女孩/image-pre.webp",
-        "url":"/img/wallpaper/static/海洋女孩/image.png",     //当然，也可填写网络地址或壁纸api，如随机PC壁纸api："url":"https://t.mwm.moe/pc"
+        "url":"https://t.mwm.moe/pc",     //当然，也可填写网络地址或壁纸api，如随机PC壁纸api："url":"https://t.mwm.moe/pc"
       },
     },
     "mobile":{   //移动端
@@ -37,7 +37,7 @@ const config = {
       "datainfo":{
         "title":"0001", 
         "preview":"/img/wallpaper/static-mobile/0001/image-pre.webp",
-        "url":"/img/wallpaper/static-mobile/0001/image.png"  //同理，随机移动端壁纸："url":"https://t.mwm.moe/mp"
+        "url":"https://t.mwm.moe/mp"  //同理，随机移动端壁纸："url":"https://t.mwm.moe/mp"
       }
     }
       

@@ -26,16 +26,6 @@
         </div>
 
         <v-btn
-          v-if="hasExifData"
-          icon="mdi-camera-iris"
-          @click="toggleExifPanel"
-          color="white"
-          class="mr-2"
-        >
-          <v-tooltip activator="parent" location="bottom">拍摄信息</v-tooltip>
-        </v-btn>
-
-        <v-btn
           icon="mdi-download"
           @click="downloadImage"
           color="white"
@@ -238,8 +228,6 @@
 </template>
 
 <script>
-import EXIF from 'exif-js';
-import piexif from 'piexifjs';
 
 export default {
   name: 'ImageViewer',
@@ -904,26 +892,6 @@ export default {
 
 .exif-header h4 {
   margin: 0;
-  font-weight: 500;
-}
-
-.exif-content {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.exif-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.exif-label {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.exif-value {
   font-weight: 500;
 }
 

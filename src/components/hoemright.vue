@@ -87,7 +87,7 @@
                           aspect-ratio="1.7778"
                           :src="item.img"
                           cover
-                          :style="{ opacity: 0.8 }"
+                          :style="{ opacity: 1 }"
                           class="project-image"
                         >
                           <template v-slot:placeholder>

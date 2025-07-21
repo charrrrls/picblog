@@ -1,7 +1,7 @@
 .v-card{
     backdrop-filter: blur(var(--leleo-blur));
     border-radius: 5%;
-    color: var(--leleo-vcard-color);
+    // color: var(--leleo-vcard-color);
 }
 
 .vapp-fullscreen-background {
@@ -142,4 +142,23 @@
     z-index: -1;
     /* 调整亮度值  */
     filter: brightness(var(--leleo-brightness));
+}
+
+/* 覆盖Vuetify的图片预加载滤镜 */
+.v-img__img--preload {
+  filter: none !important;
+}
+
+/* 确保图片清晰显示 */
+.v-img__img {
+  filter: none !important;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: auto;
+}
+
+/* 如果是头像模糊，特别处理 */
+.leleo-left-avatar .v-img__img {
+  filter: none !important;
+  image-rendering: auto;
 }
